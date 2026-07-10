@@ -3,6 +3,8 @@ import sqlite3
 import io
 import openpyxl
 
+print("hello world")
+
 app = FastAPI(
     title="Pick-to-Light API",
     description="API para controlar el sistema de localizador de almacenes",
