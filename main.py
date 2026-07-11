@@ -3,7 +3,7 @@ import sqlite3
 import io
 import openpyxl
 
-print("hello world")
+
 
 app = FastAPI(
     title="Pick-to-Light API",
@@ -51,7 +51,8 @@ def buscar_ubicacion(part_number: str):
 @app.post("/importar-layout")
 async def importar_layout(archivo: UploadFile = File(...)):
     # Validamos que sea un archivo Excel
-    if not archivo.filename.endswith('.xlsx'):
+    filename = archivo.filename or ""
+    if not filename.endswith('.xlsx'):
         raise HTTPException(status_code=400, detail="El archivo debe ser formato .xlsx")
     
     # Leemos el contenido binario en memoria
@@ -61,6 +62,8 @@ async def importar_layout(archivo: UploadFile = File(...)):
         # Cargamos el archivo Excel
         workbook = openpyxl.load_workbook(io.BytesIO(contenido), data_only=True)
         sheet = workbook.active
+        if sheet is None:
+            raise ValueError("El Excel no contiene una hoja activa")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al leer el Excel: {str(e)}")
 
