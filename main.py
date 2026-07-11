@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi.responses import RedirectResponse
 import sqlite3
 import io
 import openpyxl
@@ -18,9 +19,9 @@ def get_db_connection():
     return conn
 
 # Buscar numero de parte 
-@app.get("/")
+@app.get("/", include_in_schema=False)
 def read_root():
-    return {"status": "ok", "mensaje": "Servidor Pick-to-Light funcionando correctamente"}
+    return RedirectResponse(url="/docs")
 
 @app.get("/inventario/{part_number}")
 def buscar_ubicacion(part_number: str):
@@ -109,3 +110,12 @@ async def importar_layout(archivo: UploadFile = File(...)):
         "status": "success", 
         "mensaje": f"Carga completa. Se crearon {ubicaciones_insertadas} ubicaciones y se asignaron {inventario_insertado} SKUs."
     }
+if __name__ == "__main__":
+    import threading
+    import webbrowser
+
+    import uvicorn
+
+    docs_url = "http://127.0.0.1:8000/docs"
+    threading.Timer(1.5, lambda: webbrowser.open(docs_url)).start()
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
