@@ -46,6 +46,11 @@
           <p>Upload the current Excel layout to replace the saved inventory.</p>
         </div>
         <form id="upload-form" class="upload-form">
+          <!-- NEW: temporary shared-admin credentials are required only for inventory replacement. -->
+          <label class="file-label" for="upload-username">Admin username</label>
+          <input id="upload-username" type="text" autocomplete="username" required />
+          <label class="file-label" for="upload-password">Admin password</label>
+          <input id="upload-password" type="password" autocomplete="current-password" required />
           <label class="file-label" for="layout-file">Select Excel file</label>
           <input id="layout-file" name="archivo" type="file" accept=".xlsx" required />
           <button type="submit">Upload layout</button>

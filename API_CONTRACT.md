@@ -40,7 +40,10 @@ Pick-to-Light is a warehouse location system.
 
 | Path | Purpose | Ownership / Notes |
 | --- | --- | --- |
-| `main.py` | FastAPI application and current API routes | Backend |
+| `main.py` | FastAPI application startup, static files, and route registration | Backend |
+| `database.py` | SQLite connection and inventory search functions | Backend |
+| `routers/inventory.py` | Part-number search endpoint | Backend |
+| `routers/layout.py` | Excel-import endpoint | Backend |
 | `almacen_ptl.db` | Local SQLite inventory database | Backend data; currently ignored by Git |
 | `PartNumbers Layout.xlsx` | Local Excel layout used for inventory data | Source data; currently ignored by Git |
 | `setup_db.py` | Creates the initial SQLite tables | Backend utility |
@@ -165,7 +168,7 @@ Rules:
 - The first row is treated as headers and is ignored.
 - Rows missing a Location ID are ignored.
 - The file extension must be `.xlsx`.
-- Excel upload access is currently not protected by login or an admin role.
+- Excel upload requires HTTP Basic authentication with the temporary shared admin account.
 
 Successful response: `200 OK`
 
@@ -207,10 +210,13 @@ async function uploadLayout(file) {
   const formData = new FormData();
   formData.append("archivo", file);
 
-  const response = await fetch("/importar-layout", {
-    method: "POST",
-    body: formData
-  });
+const response = await fetch("/importar-layout", {
+  method: "POST",
+  headers: {
+    Authorization: `Basic ${btoa(`${username}:${password}`)}`
+  },
+  body: formData
+});
   const data = await response.json();
 
   if (!response.ok) {
@@ -221,7 +227,7 @@ async function uploadLayout(file) {
 }
 ```
 
-Do not set the `Content-Type` header manually when using `FormData`; the browser sets the required multipart boundary.
+Do not set the `Content-Type` header manually when using `FormData`; the browser sets the required multipart boundary. The temporary local page asks for the admin username and password before making this request.
 
 ## Integration Constraints
 
@@ -237,7 +243,7 @@ SQLite is correct for current local development and mostly fixed inventory. A de
 
 ### Upload safety
 
-Because the upload endpoint replaces all inventory, the final public system must decide who may upload the Excel file before public deployment. This is a required future task, not a frontend assumption.
+Because the upload endpoint replaces all inventory, it uses one temporary shared admin account for the current two-person team. The final public system needs individual warehouse-supervisor accounts and a proper authorization design before public deployment.
 
 ## Frontend Handoff Checklist
 

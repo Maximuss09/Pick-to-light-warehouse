@@ -44,16 +44,23 @@ searchForm.addEventListener("submit", async (event) => {
 uploadForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   const fileInput = document.querySelector("#layout-file");
+  // NEW: send temporary shared-admin credentials only with the destructive upload request.
+  const username = document.querySelector("#upload-username").value;
+  const password = document.querySelector("#upload-password").value;
   const file = fileInput.files[0];
-  if (!file) {
-    setStatus(uploadStatus, "Select an Excel file first.", "error");
+  if (!file || !username || !password) {
+    setStatus(uploadStatus, "Enter admin credentials and select an Excel file.", "error");
     return;
   }
   const formData = new FormData();
   formData.append("archivo", file);
   setStatus(uploadStatus, "Uploading and replacing inventory...");
   try {
-    const response = await fetch("/importar-layout", { method: "POST", body: formData });
+    const response = await fetch("/importar-layout", {
+      method: "POST",
+      headers: { Authorization: `Basic ${btoa(`${username}:${password}`)}` },
+      body: formData
+    });
     const data = await response.json();
     if (!response.ok) throw new Error(data.detail || "The layout could not be imported.");
     setStatus(uploadStatus, data.mensaje, "success");

@@ -1,0 +1,5 @@
+# NEW: known-working Python dependencies for the Pick-to-Light backend.
+fastapi==0.139.0
+uvicorn==0.51.0
+openpyxl==3.1.5
+python-multipart==0.0.32
