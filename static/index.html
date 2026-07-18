@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pick-to-Light | Warehouse Locator</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <header class="site-header">
+        <p class="eyebrow">WAREHOUSE OPERATIONS</p>
+        <h1>Pick-to-Light</h1>
+        <p class="subtitle">Find a part number and its exact warehouse location.</p>
+      </header>
+
+      <!-- NEW: the primary screen for operators searching warehouse inventory. -->
+      <section class="search-area" aria-labelledby="search-title">
+        <h2 id="search-title">Locate a part</h2>
+        <form id="search-form" class="search-form">
+          <label for="part-number">Part number</label>
+          <div class="search-controls">
+            <input id="part-number" name="part-number" autocomplete="off" placeholder="Example: DZ133127" required />
+            <button type="submit">Search</button>
+          </div>
+        </form>
+        <div id="search-status" class="status" role="status" aria-live="polite"></div>
+        <section id="result" class="result hidden" aria-live="polite">
+          <p class="result-label">Location found</p>
+          <h3 id="result-part-number"></h3>
+          <dl class="location-grid">
+            <div><dt>Rack</dt><dd id="result-rack"></dd></div>
+            <div><dt>Column</dt><dd id="result-column"></dd></div>
+            <div><dt>Level</dt><dd id="result-level"></dd></div>
+            <div><dt>Position</dt><dd id="result-position"></dd></div>
+          </dl>
+          <p class="location-id">Location ID: <span id="result-location-id"></span></p>
+        </section>
+      </section>
+
+      <!-- NEW: a simple upload form so the inventory can be refreshed from the approved Excel file. -->
+      <section class="upload-area" aria-labelledby="upload-title">
+        <div>
+          <p class="eyebrow">INVENTORY MANAGEMENT</p>
+          <h2 id="upload-title">Update layout</h2>
+          <p>Upload the current Excel layout to replace the saved inventory.</p>
+        </div>
+        <form id="upload-form" class="upload-form">
+          <label class="file-label" for="layout-file">Select Excel file</label>
+          <input id="layout-file" name="archivo" type="file" accept=".xlsx" required />
+          <button type="submit">Upload layout</button>
+        </form>
+        <div id="upload-status" class="status" role="status" aria-live="polite"></div>
+      </section>
+    </main>
+    <script src="/static/app.js"></script>
+  </body>
+</html>
