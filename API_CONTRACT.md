@@ -251,6 +251,16 @@ Before claiming frontend/backend integration is complete, verify all of the foll
 - Search a part from the newly uploaded layout.
 - Confirm the frontend calls the intended backend URL in the selected deployment environment.
 
+## Backend Test Commands
+
+Run the automated backend tests from the project folder:
+
+```powershell
+python -m unittest discover -s tests -v
+```
+
+The tests create their own temporary database. They do not modify `almacen_ptl.db` or the Excel layout file.
+
 ## Rules for Future Changes
 
 1. Update this document whenever a route, request field, response field, or import rule changes.
